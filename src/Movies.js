@@ -25,7 +25,7 @@ function HomeButton() {
 }
 
 
-async function getMovieIMDBid(id){
+async function goToMovieIMBDPage(id){
   const url = `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&language=en-US`
   return fetch(url)
   .then(response=>response.json())
@@ -42,7 +42,7 @@ function getMovieBlock(metadata){
   const posterURL = POSTER_URL_BASE+metadata.poster_path
   return (
       <img key={metadata.id} src={posterURL} alt={`Poster placeholder for movie: \"${metadata.original_title}\"`} style={{width:'20vw', height:'30vw',cursor:'pointer'}}
-      onClick={()=>getMovieIMDBid(metadata.id)}/>
+      onClick={()=>goToMovieIMBDPage(metadata.id)}/>
 )
 }
 
@@ -98,6 +98,18 @@ export default class App extends React.Component{
 
   async componentDidMount(){
     const routePageNumber = parseInt(this.props.match.params.page)
+    const customMovie = (this.props.match.params.movie)
+    console.log("customMovie",customMovie)
+
+    if (customMovie && customMovie.length >= MIN_SEARCH_QUERY_LENGTH){
+      // search for movie
+      const queryResults = await searchMovies(customMovie)
+      const firstResults = queryResults[0]
+      const movieID = firstResults.id
+      const imdb_id = await goToMovieIMBDPage(movieID)
+    }
+
+
     if (routePageNumber){
       this.setState({pageNumber:routePageNumber})
     }
