@@ -5,15 +5,23 @@ import Movies from './Movies';
 import * as serviceWorker from './serviceWorker';
 import { Switch, Route,BrowserRouter,Redirect } from 'react-router-dom';
 
+const Child = ({ match }) => (
+  <div>
+    <h3>ID: {match.params.id}</h3>
+  </div>
+)
+
+
+
 ReactDOM.render(
   <BrowserRouter>
-
-    <Route path="/:id" render = {()=> (<p> I want this text to show up for all routes other than '/', '/products' and '/category' </p>)}/>
-    <Route
-      path="/"
-      component={Movies}
-    />
-
+    <Switch>
+      <Route path="/:page" component={Movies}/>
+      <Route
+        path="/"
+        component={Movies}
+      />
+    </Switch>
 
   </BrowserRouter>,
   document.getElementById('root')

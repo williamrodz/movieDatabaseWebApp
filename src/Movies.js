@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom'
+import { useHistory } from "react-router-dom";
 
 const API_KEY = require('./keys.json').apiKey
 
@@ -8,6 +9,20 @@ const POSTER_URL_BASE = "https://image.tmdb.org/t/p/w500/"
 const MOVIES_PER_ROW = 4
 const IMDB_TITLE_BASE_URL = "https://www.imdb.com/title/"
 const MIN_SEARCH_QUERY_LENGTH = 3
+
+function HomeButton() {
+  const history = useHistory();
+
+  function handleClick() {
+    history.push("/2");
+  }
+
+  return (
+    <button type="button" onClick={handleClick}>
+      Go home
+    </button>
+  );
+}
 
 
 async function getMovieIMDBid(id){
@@ -26,7 +41,7 @@ async function getMovieIMDBid(id){
 function getMovieBlock(metadata){
   const posterURL = POSTER_URL_BASE+metadata.poster_path
   return (
-      <img key={metadata.id} src={posterURL} alt={`${metadata.original_title} poster`} style={{width:'20vw', height:'30vw'}}
+      <img key={metadata.id} src={posterURL} alt={`Poster placeholder for movie: \"${metadata.original_title}\"`} style={{width:'20vw', height:'30vw',cursor:'pointer'}}
       onClick={()=>getMovieIMDBid(metadata.id)}/>
 )
 }
@@ -82,7 +97,11 @@ export default class App extends React.Component{
 
 
   async componentDidMount(){
-    const results = await getData(this.state.pageNumber)
+    const routePageNumber = parseInt(this.props.match.params.page)
+    if (routePageNumber){
+      this.setState({pageNumber:routePageNumber})
+    }
+    const results = await getData(routePageNumber ? routePageNumber : this.state.pageNumber)
     this.setState({resultsForPage:results})
 
   }
@@ -103,9 +122,11 @@ export default class App extends React.Component{
   }
 
   nextPageClick = async ()=>{
-    this.setState({pageNumber:this.state.pageNumber + 1})
-    let results = await getData(this.state.pageNumber + 1)
-    this.setState({resultsForPage:results})
+    // this.context.router.push('/2');
+    // window.open('/2')
+    // this.setState({pageNumber:this.state.pageNumber + 1})
+    // let results = await getData(this.state.pageNumber + 1)
+    // this.setState({resultsForPage:results})
   }
   prevPageClick = async ()=>{
     if (this.state.pageNumber - 1 >= 1){
@@ -129,16 +150,16 @@ export default class App extends React.Component{
       >
         <h1>Movies</h1>
         <div style={{display: 'flex',flexDirection:'row',width: "100%",alignItems: 'center',justifyContent: 'center'}}>
-          <input type="text" onChange={(event) =>this.handleInputChange(event.target.value)} style={{width: '80%',height: '10vh',fontSize: '5vh',borderRadius: 10}}/>
+          <input type="text" placeholder="Search for a movie here..." onChange={(event) =>this.handleInputChange(event.target.value)} style={{width: '80%',height: '10vh',fontSize: '5vh',borderRadius: 10}}/>
         </div>
         <div style={{paddingTop: 5,display: 'flex',flexDirection: 'column',width: 1000,height: 'auto',alignItems: 'center',justifyContent: 'center'}}>
           {getMovieBlocks(this.state.resultsForPage)}
         </div>
 
         <div style={{display: 'flex',flexDirection:'row',width: "100%",alignItems: 'center',justifyContent: 'center'}}>
-            <div onClick={()=>this.prevPageClick()} style={ this.state.pageNumber > 1 ? {color: 'aqua',cursor:'pointer'} : {display: 'none'}} >previous </div>
-            <div style={{margin: 5}}>page {this.state.pageNumber} </div>
-            <div onClick={()=>this.nextPageClick()} style={{color: 'aqua',cursor:'pointer'}} >next</div>
+          {this.state.pageNumber > 1 ? (<a href={`/${this.state.pageNumber - 1}`} style={{color: 'aqua',cursor:'pointer'}} >previous</a>) : <div></div>}
+          <div style={{margin: 5}}>page {this.state.pageNumber} </div>
+          <a href={`/${this.state.pageNumber + 1}`} style={{color: 'aqua',cursor:'pointer'}} >next</a>
         </div>
 
       </div>
