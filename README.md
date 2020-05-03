@@ -12,7 +12,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 `src/keys.json`
 
-```{"apiKey":"XXXXXXXXXXXXXXXXXXXXXXXX"}
+```
+{"apiKey":"XXXXXXXXXXYOUR_API_KEYXXXXXXXX"}
 ```
 
 2) That's it! Run `yarn start` to launch the React server and get the web app running.
