@@ -58,7 +58,6 @@ function getMovieBlocks(resultsForPage){
 
 const searchMovies = (query) =>{
   let url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=en-US&query=${query}`
-  console.log("url: ",url)
 
   return fetch(url)
   .then(response=>response.json())
@@ -83,8 +82,8 @@ export default class App extends React.Component{
 
 
   async componentDidMount(){
-    const rawData = await getData(this.state.pageNumber)
-    this.setState({resultsForPage:rawData})
+    const results = await getData(this.state.pageNumber)
+    this.setState({resultsForPage:results})
 
   }
 
@@ -101,6 +100,19 @@ export default class App extends React.Component{
       })
     }
 
+  }
+
+  nextPageClick = async ()=>{
+    this.setState({pageNumber:this.state.pageNumber + 1})
+    let results = await getData(this.state.pageNumber + 1)
+    this.setState({resultsForPage:results})
+  }
+  prevPageClick = async ()=>{
+    if (this.state.pageNumber - 1 >= 1){
+      this.setState({pageNumber:this.state.pageNumber - 1})
+      let results = await getData(this.state.pageNumber - 1)
+      this.setState({resultsForPage:results})
+    }
   }
 
   render (){
@@ -124,7 +136,9 @@ export default class App extends React.Component{
         </div>
 
         <div style={{display: 'flex',flexDirection:'row',width: "100%",alignItems: 'center',justifyContent: 'center'}}>
-          <div>previous | current page number | next</div>
+            <div onClick={()=>this.prevPageClick()} style={ this.state.pageNumber > 1 ? {color: 'aqua',cursor:'pointer'} : {display: 'none'}} >previous </div>
+            <div style={{margin: 5}}>page {this.state.pageNumber} </div>
+            <div onClick={()=>this.nextPageClick()} style={{color: 'aqua',cursor:'pointer'}} >next</div>
         </div>
 
       </div>
