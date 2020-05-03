@@ -127,9 +127,9 @@ export default class App extends React.Component{
         fontSize: 'calc(10px + 2vmin)',
         color: 'white'}}
       >
-        <h1>Movies</h1>
+        <h1>Top Movies</h1>
         <div style={{display: 'flex',flexDirection:'row',width: "100%",alignItems: 'center',justifyContent: 'center'}}>
-          <input type="text" placeholder="Search for a movie here..." onChange={(event) =>this.handleInputChange(event.target.value)} style={{width: '80%',height: '10vh',fontSize: '5vh',borderRadius: 10}}/>
+          <input type="text" placeholder="Search for a movie here..." onChange={(event) =>this.handleInputChange(event.target.value)} style={{width: '80%',height: '10vh',fontSize: '5vh',borderRadius: 10,textAlign: 'center'}}/>
         </div>
         <div style={{paddingTop: 5,display: 'flex',flexDirection: 'column',width: 1000,height: 'auto',alignItems: 'center',justifyContent: 'center'}}>
           {getMovieBlocks(this.state.resultsForPage)}

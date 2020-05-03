@@ -1,6 +1,27 @@
+
+
+## Welcome!
+
+This project allows to `view top movies` and `search` for others using the power of the [The Movie Database API](https://developers.themoviedb.org/3/getting-started/introduction)
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+
+## Setup
+1) Obtain an API key at [The Movie Database API](https://developers.themoviedb.org/3/getting-started/introduction) and save it in a `keys.json` file inside the `src/` folder. The file should look like this:
+
+`src/keys.json`
+
+```{"apiKey":"XXXXXXXXXXXXXXXXXXXXXXXX"}```
+
+2) That's it! Run `yarn start` to launch the React server and get the web app running.
+
+
+
+
+
+
+## Available React Scripts
 
 In the project directory, you can run:
 
