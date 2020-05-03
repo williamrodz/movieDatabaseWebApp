@@ -3,14 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import Movies from './Movies';
 import * as serviceWorker from './serviceWorker';
-import { Switch, Route,BrowserRouter,Redirect } from 'react-router-dom';
-
-const Child = ({ match }) => (
-  <div>
-    <h3>ID: {match.params.id}</h3>
-  </div>
-)
-
+import { Switch, Route,BrowserRouter } from 'react-router-dom';
 
 
 ReactDOM.render(
