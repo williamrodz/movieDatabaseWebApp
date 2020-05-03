@@ -1,10 +1,13 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom'
 
 const API_KEY = require('./keys.json').apiKey
+
 
 const POSTER_URL_BASE = "https://image.tmdb.org/t/p/w500/"
 const MOVIES_PER_ROW = 4
 const IMDB_TITLE_BASE_URL = "https://www.imdb.com/title/"
+const MIN_SEARCH_QUERY_LENGTH = 3
 
 
 async function getMovieIMDBid(id){
@@ -22,9 +25,6 @@ async function getMovieIMDBid(id){
 
 function getMovieBlock(metadata){
   const posterURL = POSTER_URL_BASE+metadata.poster_path
-
-
-
   return (
       <img key={metadata.id} src={posterURL} alt={`${metadata.original_title} poster`} style={{width:'20vw', height:'30vw'}}
       onClick={()=>getMovieIMDBid(metadata.id)}/>
@@ -56,24 +56,50 @@ function getMovieBlocks(resultsForPage){
 }
 
 
+const searchMovies = (query) =>{
+  let url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=en-US&query=${query}`
+  console.log("url: ",url)
+
+  return fetch(url)
+  .then(response=>response.json())
+  .then(rawData=>rawData.results)
+  .catch(error=>console.log('Error with movie query'+error))
+}
+
+const getData = async (pageNumber) =>{
+  const apiCall = fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=${pageNumber}`)
+  return apiCall.then(response=>response.json()).then(rawData=>rawData.results)
+  .catch(error=>{
+    console.log("Error fetching data from API"+error)
+  })
+}
+
+
 export default class App extends React.Component{
   constructor(props){
     super(props)
-    this.state = {resultsForPage:[]}
+    this.state = {resultsForPage:[],pageNumber:1}
   }
 
-  getData = async () =>{
-    const apiCall = fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=en-US&page=1`)
-    return apiCall.then(response=>response.json())
-    .catch(error=>{
-      console.log("Error fetching data from API"+error)
-
-    })
-  }
 
   async componentDidMount(){
-    const rawData = await this.getData()
-    this.setState({resultsForPage:rawData.results})
+    const rawData = await getData(this.state.pageNumber)
+    this.setState({resultsForPage:rawData})
+
+  }
+
+  handleInputChange = async (value) =>{
+    if (value.length >=  MIN_SEARCH_QUERY_LENGTH){
+      searchMovies(value)
+      .then(results=>{
+        this.setState({resultsForPage:results})
+      })
+    } else{
+      getData(this.state.pageNumber)
+      .then(results=>{
+        this.setState({resultsForPage:results})
+      })
+    }
 
   }
 
@@ -91,9 +117,9 @@ export default class App extends React.Component{
       >
         <h1>Movies</h1>
         <div style={{display: 'flex',flexDirection:'row',width: "100%",alignItems: 'center',justifyContent: 'center'}}>
-          <input type="text" value={'...Extraction'} style={{width: '80%',height: '10vh',fontSize: '3vh'}}/>
+          <input type="text" onChange={(event) =>this.handleInputChange(event.target.value)} style={{width: '80%',height: '10vh',fontSize: '5vh',borderRadius: 10}}/>
         </div>
-        <div style={{display: 'flex',flexDirection: 'column',width: 1000,height: 'auto',alignItems: 'center',justifyContent: 'center'}}>
+        <div style={{paddingTop: 5,display: 'flex',flexDirection: 'column',width: 1000,height: 'auto',alignItems: 'center',justifyContent: 'center'}}>
           {getMovieBlocks(this.state.resultsForPage)}
         </div>
 
