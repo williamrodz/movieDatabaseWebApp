@@ -9,6 +9,7 @@ const IMDB_TITLE_BASE_URL = "https://www.imdb.com/title/"
 const MOVIES_PER_ROW = 4
 const MIN_SEARCH_QUERY_LENGTH = 3
 
+// Visit the IMDB page of a movie with a corresponding Movie DB API id
 async function goToMovieIMBDPage(id){
   const url = `${API_URL_BASE}${id}?api_key=${API_KEY}&language=en-US`
   return fetch(url)
@@ -22,14 +23,16 @@ async function goToMovieIMBDPage(id){
 
 }
 
+// Get JSX image object of movie with input metadata
 function getMovieBlock(metadata){
   const posterURL = POSTER_URL_BASE+metadata.poster_path
   return (
-      <img key={metadata.id} src={posterURL} alt={`Poster placeholder for movie: "${metadata.original_title}"`} style={{width:'20vw', height:'30vw',cursor:'pointer'}}
+      <img key={metadata.id} src={posterURL} alt={`Placeholder for poster of movie: "${metadata.original_title}"`} style={{width:'20vw', height:'30vw',cursor:'pointer'}}
       onClick={()=>goToMovieIMBDPage(metadata.id)}/>
 )
 }
 
+// Get JSX array of rows of movie blocks
 function getMovieBlocks(resultsForPage){
   const rows = []
 
@@ -52,7 +55,7 @@ function getMovieBlocks(resultsForPage){
 
 }
 
-
+// Get top results with a search term
 const searchMovies = (query) =>{
   let url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=en-US&query=${query}`
 
@@ -62,6 +65,7 @@ const searchMovies = (query) =>{
   .catch(error=>console.log('Error with movie query'+error))
 }
 
+// Get top results with no search term on specified page
 const getData = async (pageNumber) =>{
   const apiCall = fetch(`${API_URL_BASE}popular?api_key=${API_KEY}&language=en-US&page=${pageNumber}`)
   return apiCall.then(response=>response.json()).then(rawData=>rawData.results)
@@ -101,11 +105,12 @@ export default class App extends React.Component{
     this.setState({resultsForPage:results})
   }
 
+  // Hangle changes in seach input box
   handleInputChange = async (value) =>{
     if (value.length >=  MIN_SEARCH_QUERY_LENGTH){
       searchMovies(value)
       .then(results=>{
-        this.setState({resultsForPage:results})
+        this.setState({resultsForPage:results,pageNumber:1})
       })
     } else{
       getData(this.state.pageNumber)
@@ -138,6 +143,9 @@ export default class App extends React.Component{
           {this.state.pageNumber > 1 ? (<a href={`/${this.state.pageNumber - 1}`} style={{color: 'aqua',cursor:'pointer'}} >previous</a>) : <div></div>}
           <div style={{margin: 5}}>page {this.state.pageNumber} </div>
           <a href={`/${this.state.pageNumber + 1}`} style={{color: 'aqua',cursor:'pointer'}} >next</a>
+        </div>
+        <div style={{margin:10,fontSize: 14}}>
+          Made with <span style={{color: "#e25555"}}>&#9829;</span> by <a style={{color:'white',textDecoration:'none'}}href="https://github.com/williamrodz">William Rodriguez Jimenez</a>
         </div>
       </div>
     );

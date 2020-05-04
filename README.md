@@ -2,15 +2,15 @@
 
 ## Welcome!
 
-This project allows to `view top movies` and `search` for others using the power of the [The Movie Database API](https://developers.themoviedb.org/3/getting-started/introduction)
+This project allows you to `view popular movies` and `search` for others using the power of the [The Movie Database API](https://developers.themoviedb.org/3/getting-started/introduction)
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 
 ## Setup
-1) Obtain an API key at [The Movie Database API](https://developers.themoviedb.org/3/getting-started/introduction) and save it in a `keys.json` file inside the `src/` folder. The file should look like this:
+1) Obtain an API key at [The Movie Database API](https://developers.themoviedb.org/3/getting-started/introduction) and create a `keys.json` file inside the `src/` folder.
 
-`src/keys.json`
+`src/keys.json` should look like this:
 
 ```
 {"apiKey":"XXXXXXXXXXYOUR_API_KEYXXXXXXXX"}
